@@ -11,6 +11,7 @@ public class DigitalDisplay
 	 */ 
 	static int[][] combinations=new int[][]{{1,1,1,0,1,1,1},{0,0,1,0,0,1,0},{1,0,1,1,1,0,1},{1,0,1,1,0,1,1},{0,1,1,1,0,1,0},
 									{1,1,0,1,0,1,1},{1,1,0,1,1,1,1},{1,0,1,0,0,1,0},{1,1,1,1,1,1,1},{1,1,1,1,0,1,1}};
+									
 	// Symbols for horizontal and vertical line segments
 	static String horLines[]={""," ---- "};
 	static String verLines[]={" ","|"};
