@@ -27,8 +27,8 @@ public class RomanNumbersVer2
 		
 		// Declare a 2D array - rows represent hundreds,tens and units places resp
 		String[][] symbols = {{"","C","CC","CCC","CD","D","DC","DCC","DCCC","CM"},
-						 {"","X","XX","XXX","XL","L","LX","LXX","LXXX","XC"},
-						 {"","I","II","III","IV","V","VI","VII","VIII","IX"}};
+							  {"","X","XX","XXX","XL","L","LX","LXX","LXXX","XC"},
+							  {"","I","II","III","IV","V","VI","VII","VIII","IX"}};
 			
 		//Storing digits of the number in an temporary array
 		while(n!=0 && n<1000)

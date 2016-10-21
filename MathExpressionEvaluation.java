@@ -1,3 +1,7 @@
+/* OBJECTIVE: Given a numeric expression, convert it into Postfix notation and print the result after evaluating
+ *  the Postfix expression. 
+ */
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -5,58 +9,58 @@ import java.util.StringTokenizer;
 import java.util.Stack;
 
 public class MathExpressionEvaluation {
-	
+
 	static Stack<String> operatorStack=new Stack<String>();
 	static Stack<String> operandStack=new Stack<String>();
-	
+
 	static final String operatorRegEx="[/*+()-]";
 	static final String operandRegEx="^[0-9]+$";
-	
+
 	public static void main(String args[]) throws IOException
 	{
 		// Reading input from the user
+		System.out.println("Enter a numeric expression:"); 
 		BufferedReader buf=new BufferedReader(new InputStreamReader (System.in));
 		String readerinput=buf.readLine();
-		
+
 		// Tokenize Input String
 		StringTokenizer inputArray=tokenizeString(readerinput,false);
-		
+
 		// Convert input to Postfix Notation
 		String postfix=convertToPostfix(inputArray);
-		
+
 		// Print Postfix Notation
 		System.out.println("Postfix Notation: "+postfix); 
-		
+
 		// Tokenize Postfix Notation
 		StringTokenizer postfixArray=tokenizeString(postfix,true);
-		
+
 		// Evaluate Postfix - compute the value and store in operandStack
 		String result=evaluatePostfix(postfixArray);
-		
+
 		// We are done!
 		System.out.println("Result: "+result); // Print output value
 	}
-	
+
 	private static StringTokenizer tokenizeString(String tokenStr,boolean isInPostFix) {
-		
 		if(!isInPostFix)	
 			return new StringTokenizer(tokenStr,"*/()+-",true);
 		return new StringTokenizer(tokenStr," ");
 	}
-	
+
 	private static String convertToPostfix(StringTokenizer inputArray)  {
 		String currentToken="";
 		while(inputArray.hasMoreTokens())
 		{		
 			currentToken=inputArray.nextToken();
-			
+
 			// operand
 			if(currentToken.matches(operandRegEx))
 			{
 				operandStack.push(currentToken);
 				continue;
 			}
-			
+
 			// not operator
 			if(!currentToken.matches(operatorRegEx))
 			{
@@ -73,7 +77,7 @@ public class MathExpressionEvaluation {
 
 			int precedenceCurrentToken =  precedence(currentToken);
 			int precedenceOnStack = precedence((String)operatorStack.peek());
-			
+
 			// input operator has less precedence
 			if (precedenceCurrentToken <= precedenceOnStack)
 				convertExpressionToPostFix(currentToken);
@@ -85,7 +89,7 @@ public class MathExpressionEvaluation {
 			convertExpressionToPostFix(currentToken);
 		return (String)operandStack.pop();
 	}
-	
+
 	private static void convertExpressionToPostFix(String operator) { 
 		String lhs="", rhs="", op="";
 
@@ -102,7 +106,7 @@ public class MathExpressionEvaluation {
 			else // operator on stack top is (
 				break;
 		}
-		
+
 		// Push current token on the stack
 		if(!operator.equals(")") && !operator.equals(" "))
 			operatorStack.push(operator);
@@ -112,15 +116,14 @@ public class MathExpressionEvaluation {
 	{	// Returns Precedence of given token
 		int p=-1;
 		char firstChar = inputStr.charAt(0);
-		switch(firstChar)
-		{
-			case '*': case '/':p= 2; break; 
-			case '+': case '-':p= 1; break; 
-			case '(': case ')':p= 0; break;
+		switch(firstChar){
+		case '*': case '/':p= 2; break; 
+		case '+': case '-':p= 1; break; 
+		case '(': case ')':p= 0; break;
 		}
 		return p;
 	}
-	
+
 	// Evaluates the given postfix expression
 	private static String evaluatePostfix(StringTokenizer postfixArray)
 	{
@@ -137,7 +140,7 @@ public class MathExpressionEvaluation {
 		}
 		return operandStack.pop();
 	}
-	
+
 	private static void operate(String currentToken) 
 	{
 		int right = Integer.parseInt(operandStack.pop());
@@ -146,19 +149,19 @@ public class MathExpressionEvaluation {
 		char c=currentToken.charAt(0);
 		switch(c)
 		{
-			case '*': tempResult=left*right; break;
-			case '+': tempResult=left+right; break;
-			case '-': tempResult=left-right; break;
-			case '/': 	try 
-						{
-							tempResult=left/right; 
-						}
-						catch (ArithmeticException e)
-						{	
-							System.out.println(e.toString()); 
-							System.exit(0);
-						}
-			  			break;
+		case '*': tempResult=left*right; break;
+		case '+': tempResult=left+right; break;
+		case '-': tempResult=left-right; break;
+		case '/': 	try 
+		{
+			tempResult=left/right; 
+		}
+		catch (ArithmeticException e)
+		{	
+			System.out.println(e.toString()); 
+			System.exit(0);
+		}
+		break;
 		}
 		operandStack.push(String.valueOf(tempResult));
 	}

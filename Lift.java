@@ -8,7 +8,7 @@ public class Lift
 	String[][] currentDirectionRequestsArray;
 	int currentTime=0;
 	int currentDestination,numberOfRequests;
-	
+
 	public static void main(String args[]) throws IOException
 	{
 		Lift lift=new Lift();
@@ -19,22 +19,22 @@ public class Lift
 	{
 		String s="";
 		int c;
-		
+
 		// Take input from the file
 		FileInputStream fs=new FileInputStream(args[0]);
 		while((c=fs.read())!=-1)
 			s+=Character.toString((char)c);
-				
+		fs.close();
 		//Tokenize Input
 		StringTokenizer strTokens=new StringTokenizer(s,"|\n\r",false);
-		
+
 		// count number of requests
 		numberOfRequests=(strTokens.countTokens())/4;
-		
+
 		// define array sizes
 		requestsArray=new String[numberOfRequests][4];
 		currentDirectionRequestsArray=new String[numberOfRequests][4];
-		
+
 		//store input in 2D request array
 		for(int i=0;i<numberOfRequests;i++)
 		{
@@ -45,15 +45,15 @@ public class Lift
 			}
 		}
 	}
-		
+
 	private void processLift() 
 	{	
 		int currentRow=0,currentLiftPosition=0;
 		String currentDirection="";
 		int currentTargetFloor,difference;
-		
+
 		System.out.println("Idle at floor 0");
-		
+
 		//loop thru each request in the requestsArray
 		for(int i=0;i<numberOfRequests;i++)
 		{
@@ -72,12 +72,12 @@ public class Lift
 				}
 				if(currentTime==0)
 					currentTime=Integer.parseInt(requestsArray[i][2]);		
-				
+
 				//print time, source and destination floors
 				System.out.printf("\nTIME - %d seconds: ",currentTime);
 				System.out.printf("Going %s from floor %d to floor %d \n",currentDirection,currentLiftPosition,currentTargetFloor);
-				
-				
+
+
 				//check for intermediate requests before finishing the 1st request
 				currentLiftPosition=processRequest(currentRow,currentTargetFloor,currentDirection,currentLiftPosition);	
 			}
@@ -85,14 +85,14 @@ public class Lift
 		// print total time
 		System.out.println("\nTOTAL TRAVEL TIME: "+currentTime);
 	}
-	
+
 	private int processRequest(int currentRow,int currentTargetFloor,String currentDirection,int startingPosition) 
 	{
 		int i=currentRow,p=0;
-		
+
 		//make sure current direction requests array is empty
 		emptyCurrentDirectionQueue();	
-		
+
 		// short list all requests in the current direction
 		while(p<4 && ++i<numberOfRequests)
 		{
@@ -103,38 +103,38 @@ public class Lift
 				p++;
 			}
 		}
-				
+
 		//Check for requests before reaching the source of the current request 
 		checkRequestsAtIntermediateFloors(currentTargetFloor,currentDirection,startingPosition);
-				
+
 		// update Travel Time since source is reached
 		if(currentTime<=currentTargetFloor)
 			currentTime=currentTargetFloor;
 		else currentTime+=(Math.abs(currentTargetFloor-startingPosition));
-	
+
 		// store source in a temporary variable
 		int currentSource=currentTargetFloor;
-		
+
 		//take destination for the source
 		currentTargetFloor=Integer.parseInt(requestsArray[currentRow][3]);
-		
+
 		// print travel time , source and destination floors
 		System.out.printf("\nTIME - %d seconds: ",currentTime);
 		System.out.printf("Going %s from floor %d to Floor %d \n",currentDirection,currentSource,currentTargetFloor);
-		
-		
+
+
 		//Now that the source of the original request is reach, check for requests before reaching the destination of the current request 
 		checkRequestsAtIntermediateFloors(currentTargetFloor,currentDirection,startingPosition);
-		
+
 		// update travel time
 		if(currentTime<=currentTargetFloor)
 			currentTime=currentTargetFloor;
 		else 
 			currentTime+=(Math.abs(currentSource-currentTargetFloor));
-			
+
 		// eliminate current request from original array as it is served
 		eliminateFromOriginalRequestsArray(currentRow,currentSource);
-		
+
 		//return lift's current position
 		return currentTargetFloor;
 
@@ -165,7 +165,7 @@ public class Lift
 	{
 		int k;
 		String temp;
-		
+
 		for(int p=0;currentDirectionRequestsArray[p][0]!=null;p++)
 		{
 			if(p==i)
@@ -182,7 +182,7 @@ public class Lift
 					currentDirectionRequestsArray[k-1][q]=null;
 			}
 		}
-		
+
 	}
 	private void eliminateIntermediateRequestFromRequestsArray(int i,int target)
 	{
@@ -202,28 +202,28 @@ public class Lift
 	private void checkRequestsAtIntermediateFloors(int currentTargetFloor,String direction,int currentLiftPosition)
 	{	
 		int intermediateFloorDestination,thisFloor,secondWhenPressed;
-			
+
 		// loop through short listed queue
 		for(int i=0;currentDirectionRequestsArray[i][0]!=null;i++)
 		{
 			// currently indexed floor and time when button is pressed are stored
 			thisFloor=Integer.parseInt(currentDirectionRequestsArray[i][0]);
 			secondWhenPressed=Integer.parseInt(currentDirectionRequestsArray[i][2]);
-			
+
 			// stop at passing by floors provided time the button was pressed is less than the time it takes to reach that floor
 			if(currentLiftPosition<thisFloor && thisFloor<currentTargetFloor && (secondWhenPressed)<=(currentTime+thisFloor))
 			{		
 				System.out.print("\n\nIntermediate Request Found:\n"); 
-				
+
 				// update Travel time and print it
 				currentTime+=(Integer.parseInt(currentDirectionRequestsArray[i][2]));
 				System.out.printf("\n\tTIME - %d seconds: ",currentTime);
 				System.out.print("Stop at floor number "+thisFloor+"\n");
 				currentLiftPosition=thisFloor;
-				
+
 				//Take destination
 				intermediateFloorDestination=Integer.parseInt(currentDirectionRequestsArray[i][3]);
-				
+
 				// Is destinaion of intermediate request less than target request floor
 				if(	intermediateFloorDestination<=currentTargetFloor)
 				{
@@ -232,9 +232,9 @@ public class Lift
 					System.out.printf("\n\tTIME - %d seconds: ",currentTime);
 					System.out.printf("Stop at floor number  %d\n",intermediateFloorDestination);
 					currentLiftPosition=intermediateFloorDestination;
-					
+
 					System.out.print("\nIntermediate Request Served:\n\n"); 
-					
+
 					//eliminate request from currentDirectionQueue and requestsArray
 					eliminateIntermediateRequestFromRequestsArray(i,thisFloor);
 					eliminateCurrentDirectionQueue(i);
